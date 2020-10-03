@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sp.mapper.StudentMapper">
+
+	<resultMap id="result" type="com.sp.model.Student">
+		<result property="id" column="id" />
+		<result property="firstName" column="first_name" />
+		<result property="lastName" column="last_name" />
+		<result property="email" column="email" />
+	</resultMap>
+
+	<resultMap type="com.sp.model.Student" id="Student">
+		<result property="id" jdbcType="INTEGER" javaType="Integer" column="id" />
+		<result property="firstName" jdbcType="VARCHAR" javaType="String" column="first_name" />
+		<result property="lastName" jdbcType="VARCHAR" javaType="String" column="last_name" />
+		<result property="email" jdbcType="VARCHAR" javaType="String" column="email" />
+		<result property="output" jdbcType="VARCHAR" javaType="String" column="first_name" />
+		
+	</resultMap>
+	
+	<resultMap type="String" id="StudentResult">
+		<result property="output" jdbcType="VARCHAR" javaType="String" column="output" />
+	</resultMap>
+
+	<select id="getAll" resultMap="result">
+		SELECT * FROM STUDENT;
+	</select>
+
+	<select id="getById" parameterType="int" resultMap="result">
+		SELECT * FROM STUDENT WHERE ID = #{id};
+	</select>
+
+	<select id="getByIdStoreProcedure" resultMap="StudentResult"
+		parameterType="Student" statementType="CALLABLE">
+		call read_recordById(#{id,mode=IN,jdbcType = INTEGER},
+					#{firstName,mode=IN,jdbcType = VARCHAR},
+					#{lastName,mode=IN,jdbcType = VARCHAR},
+					#{email,mode=IN,jdbcType = VARCHAR},
+					#{output,mode=OUT,jdbcType = VARCHAR}
+							 );
+
+	</select>
+
+	<insert id="insertStudent"  parameterType="com.sp.model.Student" 
+		statementType="CALLABLE">
+		CALL insert_student(
+		#{firstName,mode=IN,jdbcType = VARCHAR},
+		#{lastName,mode=IN,jdbcType = VARCHAR},
+		#{email,mode=IN,jdbcType =VARCHAR})
+	</insert>
+
+
+
+</mapper>
